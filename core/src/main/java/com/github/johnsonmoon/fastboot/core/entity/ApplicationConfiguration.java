@@ -1,15 +1,19 @@
 package com.github.johnsonmoon.fastboot.core.entity;
 
+import com.github.johnsonmoon.fastboot.core.util.StringUtils;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by johnsonmoon at 2018/5/11 17:01.
  */
 public class ApplicationConfiguration {
+	private static final String REST_EASY_PROVIDERS = "resteasy.providers";
 	/**
 	 * Spring context configuration resource location
 	 */
@@ -30,6 +34,10 @@ public class ApplicationConfiguration {
 	 * Application context parameters.
 	 */
 	private Map<String, String> contextParams;
+	/**
+	 * Providers for restEasy.
+	 */
+	private List<String> providers;
 	/**
 	 * Servlet to be added to jetty.
 	 * <pre>
@@ -78,27 +86,18 @@ public class ApplicationConfiguration {
 	}
 
 	public Map<String, String> getContextParams() {
+		if (providers != null && !providers.isEmpty()) {
+			addContextParam(REST_EASY_PROVIDERS, StringUtils.combineWithSymbol(providers, ","));
+		}
 		return contextParams;
-	}
-
-	public void setContextParams(Map<String, String> contextParams) {
-		this.contextParams = contextParams;
 	}
 
 	public Map<String, ServletHolder> getServlets() {
 		return servlets;
 	}
 
-	public void setServlets(Map<String, ServletHolder> servlets) {
-		this.servlets = servlets;
-	}
-
 	public Map<String, FilterHolder> getFilters() {
 		return filters;
-	}
-
-	public void setFilters(Map<String, FilterHolder> filters) {
-		this.filters = filters;
 	}
 
 	public void addContextParam(String name, String value) {
@@ -106,6 +105,26 @@ public class ApplicationConfiguration {
 			this.contextParams = new HashMap<>();
 		}
 		this.contextParams.put(name, value);
+	}
+
+	public void addProvider(String provider) {
+		if (provider == null || provider.isEmpty()) {
+			return;
+		}
+		if (this.providers == null) {
+			this.providers = new ArrayList<>();
+		}
+		this.providers.add(provider);
+	}
+
+	public void addProvider(Class<?> provider) {
+		if (provider == null) {
+			return;
+		}
+		if (this.providers == null) {
+			this.providers = new ArrayList<>();
+		}
+		this.providers.add(provider.getName());
 	}
 
 	public void addServlet(String path, ServletHolder servletHolder) {

@@ -131,11 +131,11 @@ public class ApplicationStartup {
 
 	private static void restEasyInit(ApplicationConfiguration configuration, ApplicationContext applicationContext) {
 		ServletHolder servletHolder = new ServletHolder();
-		servletHolder.setName("RestEasy");
+		servletHolder.setName("rest-easy");
 		servletHolder.setClassName("org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher");
 		servletHolder.setInitParameter("javax.ws.rs.Application",
 				"com.github.johnsonmoon.fastboot.core.common.RestEasyInit");
-		configuration.addServlet(configuration.getContextPath() + "/*", servletHolder);
+		configuration.addServlet("/*", servletHolder);
 		RestEasyInit.setApplicationContext(applicationContext);
 	}
 }

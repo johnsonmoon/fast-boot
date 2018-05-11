@@ -76,7 +76,7 @@ public class JettyStartup {
 						EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
 			}
 		}
-		servletContextHandler.setHandler(servletContextHandler);
+		server.setHandler(servletContextHandler);
 		try {
 			server.start();
 		} catch (Exception e) {
