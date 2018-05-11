@@ -18,83 +18,86 @@ import java.util.Map;
  * Created by johnsonmoon at 2018/5/11 11:30.
  */
 public class JettyStartup {
-    private static Logger logger = LoggerFactory.getLogger(JettyStartup.class);
-    private static boolean started = false;
-    private static Server server;
-    private static String host;
-    private static String port;
-    private static String contextPath;
-    private static Map<String, ServletHolder> servlets;//<path, servlet>
-    private static Map<String, FilterHolder> filters;//<path, filter>
+	private static Logger logger = LoggerFactory.getLogger(JettyStartup.class);
+	private static boolean started = false;
+	private static Server server;
+	private static String host;
+	private static String port;
+	private static String contextPath;
+	private static Map<String, String> contextParams;
+	private static Map<String, ServletHolder> servlets;//<path, servlet>
+	private static Map<String, FilterHolder> filters;//<path, filter>
 
-    public JettyStartup() {
-    }
+	public void setHostPort(String host, String port) {
+		JettyStartup.host = host;
+		JettyStartup.port = port;
+	}
 
-    public JettyStartup(String host, String port, String contextPath) {
-        JettyStartup.host = host;
-        JettyStartup.port = port;
-    }
+	public void setContextPath(String contextPath) {
+		JettyStartup.contextPath = contextPath;
+	}
 
-    public void setHostPort(String host, String port) {
-        JettyStartup.host = host;
-        JettyStartup.port = port;
-    }
+	public void setContextParams(Map<String, String> contextParams) {
+		JettyStartup.contextParams = contextParams;
+	}
 
-    public void setContextPath(String contextPath) {
-        JettyStartup.contextPath = contextPath;
-    }
+	public void setServlets(Map<String, ServletHolder> servlets) {
+		JettyStartup.servlets = servlets;
+	}
 
-    public void setServlets(Map<String, ServletHolder> servlets) {
-        JettyStartup.servlets = servlets;
-    }
+	public void setFilters(Map<String, FilterHolder> filters) {
+		JettyStartup.filters = filters;
+	}
 
-    public void setFilters(Map<String, FilterHolder> filters) {
-        JettyStartup.filters = filters;
-    }
+	public boolean startServer() {
+		if (StringUtils.containsEmpty(host, port, contextPath)) {
+			logger.error("Jetty server host and port and contextPath must not be null!");
+			return false;
+		}
+		InetSocketAddress address = new InetSocketAddress(host, Integer.parseInt(port));
+		if (server == null) {
+			server = new Server(address);
+		}
+		ServletContextHandler servletContextHandler = new ServletContextHandler();
+		servletContextHandler.setContextPath(contextPath);
+		if (!CollectionUtils.isMapEmpty(contextParams)) {
+			for (Map.Entry<String, String> entry : contextParams.entrySet()) {
+				servletContextHandler.setInitParameter(entry.getKey(), entry.getValue());
+			}
+		}
+		if (!CollectionUtils.isMapEmpty(servlets)) {
+			for (Map.Entry<String, ServletHolder> entry : servlets.entrySet()) {
+				servletContextHandler.addServlet(entry.getValue(), entry.getKey());
+			}
+		}
+		if (!CollectionUtils.isMapEmpty(filters)) {
+			for (Map.Entry<String, FilterHolder> entry : filters.entrySet()) {
+				servletContextHandler.addFilter(entry.getValue(), entry.getKey(),
+						EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
+			}
+		}
+		servletContextHandler.setHandler(servletContextHandler);
+		try {
+			server.start();
+		} catch (Exception e) {
+			logger.warn(String.format("Jetty server start error: %s", e.getMessage()), e);
+			return false;
+		}
+		server.setStopAtShutdown(true);
+		started = true;
+		return true;
+	}
 
-    public boolean startServer() {
-        if (StringUtils.containsEmpty(host, port, contextPath)) {
-            logger.error("Jetty server host and port and contextPath must not be null!");
-            return false;
-        }
-        InetSocketAddress address = new InetSocketAddress(host, Integer.parseInt(port));
-        if (server == null) {
-            server = new Server(address);
-        }
-        ServletContextHandler servletContextHandler = new ServletContextHandler();
-        servletContextHandler.setContextPath(contextPath);
-        if (!CollectionUtils.isMapEmpty(servlets)) {
-            for (Map.Entry<String, ServletHolder> entry : servlets.entrySet()) {
-                servletContextHandler.addServlet(entry.getValue(), entry.getKey());
-            }
-        }
-        if (!CollectionUtils.isMapEmpty(filters)) {
-            for (Map.Entry<String, FilterHolder> entry : filters.entrySet()) {
-                servletContextHandler.addFilter(entry.getValue(), entry.getKey(), EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
-            }
-        }
-        servletContextHandler.setHandler(servletContextHandler);
-        try {
-            server.start();
-        } catch (Exception e) {
-            logger.warn(String.format("Jetty server start error: %s", e.getMessage()), e);
-            return false;
-        }
-        server.setStopAtShutdown(true);
-        started = true;
-        return true;
-    }
-
-    public boolean stopServer() {
-        if (started && server != null) {
-            try {
-                server.stop();
-            } catch (Exception e) {
-                logger.warn(String.format("Jetty server stop error: %s", e.getMessage()), e);
-                return false;
-            }
-        }
-        started = false;
-        return true;
-    }
+	public boolean stopServer() {
+		if (started && server != null) {
+			try {
+				server.stop();
+			} catch (Exception e) {
+				logger.warn(String.format("Jetty server stop error: %s", e.getMessage()), e);
+				return false;
+			}
+		}
+		started = false;
+		return true;
+	}
 }
