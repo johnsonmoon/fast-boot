@@ -1,4 +1,4 @@
-package com.github.johnsonmoon.fastboot.core.common;
+package com.github.johnsonmoon.fastboot.core.common.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,16 +13,16 @@ import java.util.Set;
 /**
  * Created by johnsonmoon at 2018/5/11 11:30.
  */
-public class RestEasyInit extends Application {
-	private static Logger logger = LoggerFactory.getLogger(RestEasyInit.class);
+public class RestEasyInitApplication extends Application {
+	private static Logger logger = LoggerFactory.getLogger(RestEasyInitApplication.class);
 	private static ApplicationContext applicationContext;
 	private Set<Object> set = new HashSet<>();
 
 	public static void setApplicationContext(ApplicationContext applicationContext) {
-		RestEasyInit.applicationContext = applicationContext;
+		RestEasyInitApplication.applicationContext = applicationContext;
 	}
 
-	public RestEasyInit() {
+	public RestEasyInitApplication() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(
 				"Service beans scan: \n-------------------------------------------------------------------------------------------------\n");

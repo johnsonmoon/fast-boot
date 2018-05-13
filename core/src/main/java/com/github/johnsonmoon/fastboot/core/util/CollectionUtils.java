@@ -26,4 +26,19 @@ public class CollectionUtils {
 	public static boolean isMapEmpty(Map<?, ?> map) {
 		return map == null || map.isEmpty();
 	}
+
+	/**
+	 * Convert type collection into type array.
+	 *
+	 * @param tCollection type collection
+	 * @param <T>         type parameter
+	 * @return type array
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] toArray(Collection<T> tCollection) {
+		if (tCollection == null || tCollection.isEmpty()) {
+			return null;
+		}
+		return (T[]) tCollection.toArray();
+	}
 }

@@ -1,19 +1,30 @@
 package com.github.johnsonmoon.fastboot.core.entity;
 
+import com.github.johnsonmoon.fastboot.core.common.DispatcherStartup;
+import com.github.johnsonmoon.fastboot.core.common.ServerStartup;
 import com.github.johnsonmoon.fastboot.core.util.StringUtils;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletHolder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by johnsonmoon at 2018/5/11 17:01.
  */
 public class ApplicationConfiguration {
 	private static final String REST_EASY_PROVIDERS = "resteasy.providers";
+	/**
+	 * Server config.
+	 * <pre>
+	 *     default server config : {@link com.github.johnsonmoon.fastboot.core.common.impl.JettyServerStartup}
+	 * </pre>
+	 */
+	private ServerStartup serverStartup;
+	/**
+	 * Dispatcher config.
+	 * <pre>
+	 *     default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.common.impl.RestEasyDispatcherStartup}
+	 * </pre>
+	 */
+	private DispatcherStartup dispatcherStartup;
 	/**
 	 * Spring context configuration resource location
 	 */
@@ -39,19 +50,33 @@ public class ApplicationConfiguration {
 	 */
 	private List<String> providers;
 	/**
-	 * Servlet to be added to jetty.
-	 * <pre>
-	 *     [servlet context path,  servletHolder]
-	 * </pre>
+	 * Servlet to be added to server.
 	 */
-	private Map<String, ServletHolder> servlets;
+	private List<ServletConfiguration> servlets;
 	/**
-	 * Filter to be added to jetty.
-	 * <pre>
-	 *     [filter context path,  filterHolder]
-	 * </pre>
+	 * Filter to be added to server.
 	 */
-	private Map<String, FilterHolder> filters;
+	private List<FilterConfiguration> filters;
+	/**
+	 * Listener to be added to server.
+	 */
+	private List<EventListener> listeners;
+
+	public ServerStartup getServerStartup() {
+		return serverStartup;
+	}
+
+	public void setServerStartup(ServerStartup serverStartup) {
+		this.serverStartup = serverStartup;
+	}
+
+	public DispatcherStartup getDispatcherStartup() {
+		return dispatcherStartup;
+	}
+
+	public void setDispatcherStartup(DispatcherStartup dispatcherStartup) {
+		this.dispatcherStartup = dispatcherStartup;
+	}
 
 	public String getSpringConfigLocation() {
 		return springConfigLocation;
@@ -92,12 +117,20 @@ public class ApplicationConfiguration {
 		return contextParams;
 	}
 
-	public Map<String, ServletHolder> getServlets() {
+	public List<String> getProviders() {
+		return providers;
+	}
+
+	public List<ServletConfiguration> getServlets() {
 		return servlets;
 	}
 
-	public Map<String, FilterHolder> getFilters() {
+	public List<FilterConfiguration> getFilters() {
 		return filters;
+	}
+
+	public List<EventListener> getListeners() {
+		return listeners;
 	}
 
 	public void addContextParam(String name, String value) {
@@ -127,30 +160,41 @@ public class ApplicationConfiguration {
 		this.providers.add(provider.getName());
 	}
 
-	public void addServlet(String path, ServletHolder servletHolder) {
+	public void addServlet(ServletConfiguration servlet) {
 		if (this.servlets == null) {
-			this.servlets = new HashMap<>();
+			this.servlets = new ArrayList<>();
 		}
-		this.servlets.put(path, servletHolder);
+		this.servlets.add(servlet);
 	}
 
-	public void addFilter(String path, FilterHolder filterHolder) {
+	public void addFilter(FilterConfiguration filter) {
 		if (this.filters == null) {
-			this.filters = new HashMap<>();
+			this.filters = new ArrayList<>();
 		}
-		this.filters.put(path, filterHolder);
+		this.filters.add(filter);
+	}
+
+	public void addListener(EventListener listener) {
+		if (this.listeners == null) {
+			this.listeners = new ArrayList<>();
+		}
+		this.listeners.add(listener);
 	}
 
 	@Override
 	public String toString() {
 		return "ApplicationConfiguration{" +
-				"springConfigLocation='" + springConfigLocation + '\'' +
+				"serverStartup=" + serverStartup +
+				", dispatcherStartup=" + dispatcherStartup +
+				", springConfigLocation='" + springConfigLocation + '\'' +
 				", host='" + host + '\'' +
 				", port='" + port + '\'' +
 				", contextPath='" + contextPath + '\'' +
 				", contextParams=" + contextParams +
+				", providers=" + providers +
 				", servlets=" + servlets +
 				", filters=" + filters +
+				", listeners=" + listeners +
 				'}';
 	}
 }

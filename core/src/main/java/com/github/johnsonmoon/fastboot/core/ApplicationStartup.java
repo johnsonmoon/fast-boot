@@ -1,10 +1,11 @@
 package com.github.johnsonmoon.fastboot.core;
 
-import com.github.johnsonmoon.fastboot.core.common.JettyStartup;
-import com.github.johnsonmoon.fastboot.core.common.RestEasyInit;
+import com.github.johnsonmoon.fastboot.core.common.DispatcherStartup;
+import com.github.johnsonmoon.fastboot.core.common.ServerStartup;
+import com.github.johnsonmoon.fastboot.core.common.impl.JettyServerStartup;
+import com.github.johnsonmoon.fastboot.core.common.impl.RestEasyDispatcherStartup;
 import com.github.johnsonmoon.fastboot.core.entity.ApplicationConfiguration;
 import com.github.johnsonmoon.fastboot.core.util.StringUtils;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -25,10 +26,10 @@ public class ApplicationStartup {
 	 */
 	private static ApplicationConfiguration applicationConfiguration;
 	/**
-	 * Jetty server.
-	 * {@link JettyStartup}
+	 * Server.
+	 * {@link ServerStartup}
 	 */
-	private static JettyStartup jettyStartup;
+	private static ServerStartup serverStartup;
 
 	/**
 	 * Set application configuration.
@@ -49,12 +50,12 @@ public class ApplicationStartup {
 	}
 
 	/**
-	 * Get jetty server.
+	 * Get server.
 	 *
-	 * @return {@link JettyStartup}
+	 * @return {@link ServerStartup}
 	 */
-	public static JettyStartup getJettyStartup() {
-		return jettyStartup;
+	public static ServerStartup getServerStartup() {
+		return serverStartup;
 	}
 
 	/**
@@ -105,8 +106,8 @@ public class ApplicationStartup {
 
 	private static ApplicationContext bootstrap(ApplicationConfiguration configuration) {
 		ApplicationContext applicationContext = springStartup(configuration);
-		restEasyInit(configuration, applicationContext);
-		jettyStartup(configuration);
+		dispatcherStartup(configuration, applicationContext);
+		serverStartup(configuration);
 		return applicationContext;
 	}
 
@@ -117,25 +118,26 @@ public class ApplicationStartup {
 		return classPathXmlApplicationContext;
 	}
 
-	private static void jettyStartup(ApplicationConfiguration configuration) {
-		JettyStartup jettyStartup = new JettyStartup();
-		jettyStartup.setHostPort(configuration.getHost(), configuration.getPort());
-		jettyStartup.setContextPath(configuration.getContextPath());
-		jettyStartup.setContextParams(configuration.getContextParams());
-		jettyStartup.setServlets(configuration.getServlets());
-		jettyStartup.setFilters(configuration.getFilters());
-		if (jettyStartup.startServer()) {
-			ApplicationStartup.jettyStartup = jettyStartup;
+	private static void serverStartup(ApplicationConfiguration configuration) {
+		ServerStartup serverStartup = configuration.getServerStartup();
+		if (serverStartup == null) {
+			serverStartup = new JettyServerStartup();//default: jetty
+		}
+		serverStartup.setHostPort(configuration.getHost(), configuration.getPort());
+		serverStartup.setContextPath(configuration.getContextPath());
+		serverStartup.setContextParams(configuration.getContextParams());
+		serverStartup.setServlets(configuration.getServlets());
+		serverStartup.setFilters(configuration.getFilters());
+		if (serverStartup.startServer()) {
+			ApplicationStartup.serverStartup = serverStartup;
 		}
 	}
 
-	private static void restEasyInit(ApplicationConfiguration configuration, ApplicationContext applicationContext) {
-		ServletHolder servletHolder = new ServletHolder();
-		servletHolder.setName("rest-easy");
-		servletHolder.setClassName("org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher");
-		servletHolder.setInitParameter("javax.ws.rs.Application",
-				"com.github.johnsonmoon.fastboot.core.common.RestEasyInit");
-		configuration.addServlet("/*", servletHolder);
-		RestEasyInit.setApplicationContext(applicationContext);
+	private static void dispatcherStartup(ApplicationConfiguration configuration, ApplicationContext applicationContext) {
+		DispatcherStartup dispatcherStartup = configuration.getDispatcherStartup();
+		if (dispatcherStartup == null) {
+			dispatcherStartup = new RestEasyDispatcherStartup();//default: restEasy
+		}
+		dispatcherStartup.dispatcherInit(configuration, applicationContext);
 	}
 }
