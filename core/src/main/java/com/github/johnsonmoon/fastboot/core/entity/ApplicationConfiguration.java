@@ -19,6 +19,14 @@ public class ApplicationConfiguration {
 	 */
 	private ServerStartup serverStartup;
 	/**
+	 * Dispatcher disabled. default is false.
+	 * <pre>
+	 *     If true, there will be no dispatcher servlet added into servlet container.
+	 *     Default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.common.impl.RestEasyDispatcherStartup}
+	 * </pre>
+	 */
+	private boolean dispatcherDisable = false;
+	/**
 	 * Dispatcher config.
 	 * <pre>
 	 *     default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.common.impl.RestEasyDispatcherStartup}
@@ -68,6 +76,14 @@ public class ApplicationConfiguration {
 
 	public void setServerStartup(ServerStartup serverStartup) {
 		this.serverStartup = serverStartup;
+	}
+
+	public boolean isDispatcherDisable() {
+		return dispatcherDisable;
+	}
+
+	public void setDispatcherDisable(boolean dispatcherDisable) {
+		this.dispatcherDisable = dispatcherDisable;
 	}
 
 	public DispatcherStartup getDispatcherStartup() {
@@ -181,10 +197,22 @@ public class ApplicationConfiguration {
 		this.listeners.add(listener);
 	}
 
+	public void setListeners(ListenerConfiguration listenerConfiguration) {
+		if (listenerConfiguration == null) {
+			return;
+		}
+		this.listeners = listenerConfiguration.getListeners();
+	}
+
+	public void setListeners(List<EventListener> listeners) {
+		this.listeners = listeners;
+	}
+
 	@Override
 	public String toString() {
 		return "ApplicationConfiguration{" +
 				"serverStartup=" + serverStartup +
+				", dispatcherDisable=" + dispatcherDisable +
 				", dispatcherStartup=" + dispatcherStartup +
 				", springConfigLocation='" + springConfigLocation + '\'' +
 				", host='" + host + '\'' +

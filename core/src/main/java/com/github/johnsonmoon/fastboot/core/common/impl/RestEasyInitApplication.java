@@ -35,7 +35,7 @@ public class RestEasyInitApplication extends Application {
 		}
 		stringBuilder
 				.append("-------------------------------------------------------------------------------------------------");
-		logger.info(stringBuilder.toString());
+		logger.debug(stringBuilder.toString());
 	}
 
 	@Override

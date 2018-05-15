@@ -1,21 +1,15 @@
 package com.github.johnsonmoon.fastboot.core;
 
-import com.github.johnsonmoon.fastboot.core.common.DispatcherStartup;
+import com.github.johnsonmoon.fastboot.core.common.ApplicationBootstrap;
 import com.github.johnsonmoon.fastboot.core.common.ServerStartup;
-import com.github.johnsonmoon.fastboot.core.common.impl.JettyServerStartup;
-import com.github.johnsonmoon.fastboot.core.common.impl.RestEasyDispatcherStartup;
 import com.github.johnsonmoon.fastboot.core.entity.ApplicationConfiguration;
-import com.github.johnsonmoon.fastboot.core.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.github.johnsonmoon.fastboot.core.util.ApplicationConfigurationUtils;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Created by johnsonmoon at 2018/5/11 11:27.
  */
 public class ApplicationStartup {
-	private static Logger logger = LoggerFactory.getLogger(ApplicationStartup.class);
 	/**
 	 * Spring context. {@link ApplicationContext}
 	 */
@@ -64,12 +58,7 @@ public class ApplicationStartup {
 	 * @return {@link ApplicationContext}
 	 */
 	public static ApplicationContext startup() {
-		if (!checkConfiguration(applicationConfiguration)) {
-			logger.error("ApplicationConfiguration setting error! Please check it.");
-			System.exit(0);
-		}
-		ApplicationStartup.applicationContext = bootstrap(applicationConfiguration);
-		return ApplicationStartup.applicationContext;
+		return startup(applicationConfiguration);
 	}
 
 	/**
@@ -79,65 +68,30 @@ public class ApplicationStartup {
 	 * @return {@link ApplicationContext}
 	 */
 	public static ApplicationContext startup(ApplicationConfiguration applicationConfiguration) {
-		if (!checkConfiguration(applicationConfiguration)) {
-			logger.error("ApplicationConfiguration setting error! Please check it.");
+		if (!ApplicationConfigurationUtils.checkConfigurationAll(applicationConfiguration)) {
 			System.exit(0);
 		}
-		ApplicationStartup.applicationConfiguration = applicationConfiguration;
-		ApplicationStartup.applicationContext = bootstrap(applicationConfiguration);
-		return ApplicationStartup.applicationContext;
-	}
-
-	private static boolean checkConfiguration(ApplicationConfiguration applicationConfiguration) {
-		if (StringUtils.containsEmpty(applicationConfiguration.getSpringConfigLocation())) {
-			logger.error("ApplicationConfiguration missing: springConfigLocation.");
-			return false;
-		}
-		if (StringUtils.containsEmpty(applicationConfiguration.getHost(), applicationConfiguration.getPort())) {
-			logger.error("ApplicationConfiguration missing: host or port.");
-			return false;
-		}
-		if (StringUtils.containsEmpty(applicationConfiguration.getContextPath())) {
-			logger.error("ApplicationConfiguration missing: contextPath.");
-			return false;
-		}
-		return true;
-	}
-
-	private static ApplicationContext bootstrap(ApplicationConfiguration configuration) {
-		ApplicationContext applicationContext = springStartup(configuration);
-		dispatcherStartup(configuration, applicationContext);
-		serverStartup(configuration);
+		applicationContext = ApplicationBootstrap.springStartup(applicationConfiguration);
+		ApplicationBootstrap.dispatcherStartup(applicationConfiguration, applicationContext);
+		serverStartup = ApplicationBootstrap.serverStartup(applicationConfiguration);
 		return applicationContext;
 	}
 
-	private static ApplicationContext springStartup(ApplicationConfiguration configuration) {
-		ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(
-				configuration.getSpringConfigLocation());
-		classPathXmlApplicationContext.registerShutdownHook();
-		return classPathXmlApplicationContext;
-	}
-
-	private static void serverStartup(ApplicationConfiguration configuration) {
-		ServerStartup serverStartup = configuration.getServerStartup();
-		if (serverStartup == null) {
-			serverStartup = new JettyServerStartup();//default: jetty
+	/**
+	 * Startup application, with custom spring application context initialized.
+	 * <pre>
+	 *     This method calls when custom spring context has already been initialized.
+	 * </pre>
+	 *
+	 * @param applicationContext       {@link ApplicationContext}
+	 * @param applicationConfiguration {@link ApplicationConfiguration}
+	 */
+	public static void startup(ApplicationContext applicationContext, ApplicationConfiguration applicationConfiguration) {
+		if (!ApplicationConfigurationUtils.checkConfigurationMin(applicationConfiguration)) {
+			System.exit(0);
 		}
-		serverStartup.setHostPort(configuration.getHost(), configuration.getPort());
-		serverStartup.setContextPath(configuration.getContextPath());
-		serverStartup.setContextParams(configuration.getContextParams());
-		serverStartup.setServlets(configuration.getServlets());
-		serverStartup.setFilters(configuration.getFilters());
-		if (serverStartup.startServer()) {
-			ApplicationStartup.serverStartup = serverStartup;
-		}
-	}
-
-	private static void dispatcherStartup(ApplicationConfiguration configuration, ApplicationContext applicationContext) {
-		DispatcherStartup dispatcherStartup = configuration.getDispatcherStartup();
-		if (dispatcherStartup == null) {
-			dispatcherStartup = new RestEasyDispatcherStartup();//default: restEasy
-		}
-		dispatcherStartup.dispatcherInit(configuration, applicationContext);
+		ApplicationStartup.applicationContext = applicationContext;
+		ApplicationBootstrap.dispatcherStartup(applicationConfiguration, applicationContext);
+		ApplicationStartup.serverStartup = ApplicationBootstrap.serverStartup(applicationConfiguration);
 	}
 }

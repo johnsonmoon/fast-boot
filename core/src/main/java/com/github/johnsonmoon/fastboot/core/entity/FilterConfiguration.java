@@ -45,6 +45,10 @@ public class FilterConfiguration {
 		this.className = className;
 	}
 
+	public void setClass(Class<?> clazz) {
+		this.className = clazz.getName();
+	}
+
 	public Map<String, String> getInitParameters() {
 		return initParameters;
 	}

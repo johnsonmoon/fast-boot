@@ -17,7 +17,7 @@ public class TestService {
 	@GET
 	@Path("/test")
 	public String test(@Context HttpServletRequest request, @HeaderParam("user_id") String user_id) {
-		String test_url = "";
+		String test_url;
 		try {
 			test_url = request.getAttribute("test_url").toString();
 		} catch (Exception e) {

@@ -27,8 +27,8 @@ public class JettyServerStartup implements ServerStartup {
 	private String port;
 	private String contextPath;
 	private Map<String, String> contextParams;
-	private Map<String, ServletHolder> servlets;//<path, servlet>
-	private Map<String, FilterHolder> filters;//<path, filter>
+	private Map<ServletHolder, String> servlets;//<servlet, path>
+	private Map<FilterHolder, String> filters;//<filter, path>
 	private List<EventListener> listeners;//java.util.EventListener
 
 	@Override
@@ -67,7 +67,7 @@ public class JettyServerStartup implements ServerStartup {
 			if (configuration.getInitParameters() != null && !configuration.getInitParameters().isEmpty()) {
 				servletHolder.setInitParameters(configuration.getInitParameters());
 			}
-			this.servlets.put(configuration.getPath(), servletHolder);
+			this.servlets.put(servletHolder, configuration.getPath());
 		}
 	}
 
@@ -86,7 +86,7 @@ public class JettyServerStartup implements ServerStartup {
 			if (configuration.getInitParameters() != null && !configuration.getInitParameters().isEmpty()) {
 				filterHolder.setInitParameters(configuration.getInitParameters());
 			}
-			this.filters.put(configuration.getPath(), filterHolder);
+			this.filters.put(filterHolder, configuration.getPath());
 		}
 	}
 
@@ -119,16 +119,20 @@ public class JettyServerStartup implements ServerStartup {
 			}
 		}
 		if (!CollectionUtils.isCollectionEmpty(this.listeners)) {
-			servletContextHandler.setEventListeners(CollectionUtils.toArray(this.listeners));
+			EventListener[] eventListeners = new EventListener[this.listeners.size()];
+			for (int i = 0; i < this.listeners.size(); i++) {
+				eventListeners[i] = this.listeners.get(i);
+			}
+			servletContextHandler.setEventListeners(eventListeners);
 		}
 		if (!CollectionUtils.isMapEmpty(this.servlets)) {
-			for (Map.Entry<String, ServletHolder> entry : this.servlets.entrySet()) {
-				servletContextHandler.addServlet(entry.getValue(), entry.getKey());
+			for (Map.Entry<ServletHolder, String> entry : this.servlets.entrySet()) {
+				servletContextHandler.addServlet(entry.getKey(), entry.getValue());
 			}
 		}
 		if (!CollectionUtils.isMapEmpty(this.filters)) {
-			for (Map.Entry<String, FilterHolder> entry : this.filters.entrySet()) {
-				servletContextHandler.addFilter(entry.getValue(), entry.getKey(),
+			for (Map.Entry<FilterHolder, String> entry : this.filters.entrySet()) {
+				servletContextHandler.addFilter(entry.getKey(), entry.getValue(),
 						EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
 			}
 		}
