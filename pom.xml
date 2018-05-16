@@ -18,6 +18,7 @@
 		<jetty.version>9.4.2.v20170220</jetty.version>
 		<resteasy.version>3.1.0.Final</resteasy.version>
 		<slf4j.version>1.7.22</slf4j.version>
+		<logback.version>1.1.6</logback.version>
 	</properties>
 
 	<dependencies>
