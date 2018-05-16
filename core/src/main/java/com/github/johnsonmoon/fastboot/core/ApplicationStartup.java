@@ -26,15 +26,6 @@ public class ApplicationStartup {
 	private static ServerStartup serverStartup;
 
 	/**
-	 * Set application configuration.
-	 *
-	 * @param applicationConfiguration {@link ApplicationConfiguration}
-	 */
-	public static void setApplicationConfiguration(ApplicationConfiguration applicationConfiguration) {
-		ApplicationStartup.applicationConfiguration = applicationConfiguration;
-	}
-
-	/**
 	 * Get spring context.
 	 *
 	 * @return {@link ApplicationContext}

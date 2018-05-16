@@ -12,28 +12,6 @@ import java.util.*;
 public class ApplicationConfiguration {
 	private static final String REST_EASY_PROVIDERS = "resteasy.providers";
 	/**
-	 * Server config.
-	 * <pre>
-	 *     default server config : {@link com.github.johnsonmoon.fastboot.core.common.impl.JettyServerStartup}
-	 * </pre>
-	 */
-	private ServerStartup serverStartup;
-	/**
-	 * Dispatcher disabled. default is false.
-	 * <pre>
-	 *     If true, there will be no dispatcher servlet added into servlet container.
-	 *     Default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.common.impl.RestEasyDispatcherStartup}
-	 * </pre>
-	 */
-	private boolean dispatcherDisable = false;
-	/**
-	 * Dispatcher config.
-	 * <pre>
-	 *     default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.common.impl.RestEasyDispatcherStartup}
-	 * </pre>
-	 */
-	private DispatcherStartup dispatcherStartup;
-	/**
 	 * Spring context configuration resource location
 	 */
 	private String springConfigLocation;
@@ -69,6 +47,35 @@ public class ApplicationConfiguration {
 	 * Listener to be added to server.
 	 */
 	private List<EventListener> listeners;
+	/**
+	 * Server config.
+	 * <pre>
+	 *     default server config : {@link com.github.johnsonmoon.fastboot.core.common.impl.JettyServerStartup}
+	 * </pre>
+	 */
+	private ServerStartup serverStartup;
+	/**
+	 * Dispatcher disabled. default is false.
+	 * <pre>
+	 *     If true, there will be no dispatcher servlet added into servlet container.
+	 *     Default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.common.impl.RestEasyDispatcherStartup}
+	 * </pre>
+	 */
+	private boolean dispatcherDisable = false;
+	/**
+	 * Dispatcher servlet path.
+	 * <pre>
+	 *     default dispatcher path : "/*"
+	 * </pre>
+	 */
+	private String dispatcherPath = "/*";
+	/**
+	 * Dispatcher config.
+	 * <pre>
+	 *     default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.common.impl.RestEasyDispatcherStartup}
+	 * </pre>
+	 */
+	private DispatcherStartup dispatcherStartup;
 
 	public ServerStartup getServerStartup() {
 		return serverStartup;
@@ -84,6 +91,14 @@ public class ApplicationConfiguration {
 
 	public void setDispatcherDisable(boolean dispatcherDisable) {
 		this.dispatcherDisable = dispatcherDisable;
+	}
+
+	public String getDispatcherPath() {
+		return dispatcherPath;
+	}
+
+	public void setDispatcherPath(String dispatcherPath) {
+		this.dispatcherPath = dispatcherPath;
 	}
 
 	public DispatcherStartup getDispatcherStartup() {
@@ -213,6 +228,7 @@ public class ApplicationConfiguration {
 		return "ApplicationConfiguration{" +
 				"serverStartup=" + serverStartup +
 				", dispatcherDisable=" + dispatcherDisable +
+				", dispatcherPath='" + dispatcherPath + '\'' +
 				", dispatcherStartup=" + dispatcherStartup +
 				", springConfigLocation='" + springConfigLocation + '\'' +
 				", host='" + host + '\'' +

@@ -140,7 +140,7 @@ public class JettyServerStartup implements ServerStartup {
 		try {
 			this.server.start();
 		} catch (Exception e) {
-			logger.warn(String.format("Jetty server start error: %s", e.getMessage()), e);
+			logger.error(String.format("Jetty server start error: %s", e.getMessage()), e);
 			return false;
 		}
 		this.server.setStopAtShutdown(true);
@@ -154,7 +154,7 @@ public class JettyServerStartup implements ServerStartup {
 			try {
 				this.server.stop();
 			} catch (Exception e) {
-				logger.warn(String.format("Jetty server stop error: %s", e.getMessage()), e);
+				logger.error(String.format("Jetty server stop error: %s", e.getMessage()), e);
 				return false;
 			}
 		}

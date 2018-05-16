@@ -15,7 +15,7 @@ public class RestEasyDispatcherStartup implements DispatcherStartup {
 	public ApplicationConfiguration dispatcherInit(ApplicationConfiguration configuration,
 			ApplicationContext applicationContext) {
 		ServletConfiguration servletConfiguration = new ServletConfiguration();
-		servletConfiguration.setPath("/*");
+		servletConfiguration.setPath(configuration.getDispatcherPath() == null ? "/*" : configuration.getDispatcherPath());
 		servletConfiguration.setName("rest-easy");
 		servletConfiguration.setClassName("org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher");
 		servletConfiguration.setInitParameters(Collections.singletonMap("javax.ws.rs.Application",

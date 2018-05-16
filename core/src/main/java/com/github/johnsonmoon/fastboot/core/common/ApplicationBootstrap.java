@@ -48,7 +48,7 @@ public class ApplicationBootstrap {
 		serverStartup.setFilters(configuration.getFilters());
 		serverStartup.setListeners(configuration.getListeners());
 		if (serverStartup.startServer()) {
-			logger.debug(String.format("Servlet container server start suceeded at host:[], port:[]", configuration.getHost(),
+			logger.debug(String.format("Servlet container server started at host:[%s], port:[%s]", configuration.getHost(),
 					configuration.getPort()));
 			return serverStartup;
 		} else {
