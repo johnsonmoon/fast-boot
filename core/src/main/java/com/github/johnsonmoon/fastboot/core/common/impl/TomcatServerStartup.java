@@ -79,8 +79,9 @@ public class TomcatServerStartup implements ServerStartup {
             tomcat.getHost().setAutoDeploy(false);
             tomcat.setBaseDir(tempBaseDir.toFile().getAbsolutePath());
             StandardContext context = (StandardContext) tomcat.addWebapp(contextPath, tempDocDir.toFile().getAbsolutePath());
-            context.setParentClassLoader(this.getClass().getClassLoader());
+            context.setParentClassLoader(ServerStartup.class.getClassLoader());
             context.setUseRelativeRedirects(false);
+            System.setProperty("tomcat.util.scan.StandardJarScanFilter.jarsToSkip", "\\,*");
 
             //--- Context Params
             if (contextParams != null && !contextParams.isEmpty()) {
