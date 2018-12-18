@@ -69,14 +69,41 @@ public class ApplicationStartup {
     /**
      * Startup application.
      *
+     * @param clazz main entry class for the application
+     * @return {@link ApplicationContext}
+     */
+    public static ApplicationContext startup(Class<?> clazz) {
+        return startup(applicationConfiguration, clazz);
+    }
+
+    /**
+     * Startup application.
+     *
      * @param applicationConfiguration {@link ApplicationConfiguration}
      * @return {@link ApplicationContext}
      */
     public static ApplicationContext startup(ApplicationConfiguration applicationConfiguration) {
-        if (!ApplicationConfigurationUtils.checkConfigurationAll(applicationConfiguration)) {
+        if (!ApplicationConfigurationUtils.checkConfiguration(applicationConfiguration)) {
             System.exit(0);
         }
-        applicationContext = ApplicationBootstrap.springStartup(applicationConfiguration);
+        applicationContext = ApplicationBootstrap.springStartup(applicationConfiguration, null);
+        ApplicationBootstrap.dispatcherStartup(applicationConfiguration, applicationContext);
+        serverStartup = ApplicationBootstrap.serverStartup(applicationConfiguration);
+        return applicationContext;
+    }
+
+    /**
+     * Startup application.
+     *
+     * @param applicationConfiguration {@link ApplicationConfiguration}
+     * @param clazz                    main entry class for the application
+     * @return {@link ApplicationContext}
+     */
+    public static ApplicationContext startup(ApplicationConfiguration applicationConfiguration, Class<?> clazz) {
+        if (!ApplicationConfigurationUtils.checkConfiguration(applicationConfiguration)) {
+            System.exit(0);
+        }
+        applicationContext = ApplicationBootstrap.springStartup(applicationConfiguration, clazz);
         ApplicationBootstrap.dispatcherStartup(applicationConfiguration, applicationContext);
         serverStartup = ApplicationBootstrap.serverStartup(applicationConfiguration);
         return applicationContext;
@@ -92,7 +119,7 @@ public class ApplicationStartup {
      * @param applicationConfiguration {@link ApplicationConfiguration}
      */
     public static void startup(ApplicationContext applicationContext, ApplicationConfiguration applicationConfiguration) {
-        if (!ApplicationConfigurationUtils.checkConfigurationMin(applicationConfiguration)) {
+        if (!ApplicationConfigurationUtils.checkConfiguration(applicationConfiguration)) {
             System.exit(0);
         }
         ApplicationStartup.applicationContext = applicationContext;

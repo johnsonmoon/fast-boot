@@ -11,235 +11,342 @@ import java.util.*;
  * Created by johnsonmoon at 2018/5/11 17:01.
  */
 public class ApplicationConfiguration {
-	private static final String REST_EASY_PROVIDERS = "resteasy.providers";
-	/**
-	 * Spring context configuration resource location
-	 */
-	private String springConfigLocation;
-	/**
-	 * Jetty server host.
-	 */
-	private String host;
-	/**
-	 * Jetty server port.
-	 */
-	private String port;
-	/**
-	 * Application context path.
-	 */
-	private String contextPath;
-	/**
-	 * Application context parameters.
-	 */
-	private Map<String, String> contextParams;
-	/**
-	 * Providers for restEasy.
-	 */
-	private List<String> providers;
-	/**
-	 * Servlet to be added to server.
-	 */
-	private List<ServletConfiguration> servlets;
-	/**
-	 * Filter to be added to server.
-	 */
-	private List<FilterConfiguration> filters;
-	/**
-	 * Listener to be added to server.
-	 */
-	private List<EventListener> listeners;
-	/**
-	 * Server config.
-	 * <pre>
-	 *     default server config : {@link JettyServerStartup}
-	 * </pre>
-	 */
-	private ServerStartup serverStartup;
-	/**
-	 * Dispatcher disabled. default is false.
-	 * <pre>
-	 *     If true, there will be no dispatcher servlet added into servlet container.
-	 *     Default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.dispacher.resteasy.RestEasyDispatcherInitialize}
-	 * </pre>
-	 */
-	private boolean dispatcherDisable = false;
-	/**
-	 * Dispatcher servlet path.
-	 * <pre>
-	 *     default dispatcher path : "/*"
-	 * </pre>
-	 */
-	private String dispatcherPath = "/*";
-	/**
-	 * Dispatcher config.
-	 * <pre>
-	 *     default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.dispacher.resteasy.RestEasyDispatcherInitialize}
-	 * </pre>
-	 */
-	private DispatcherInitialize dispatcherStartup;
+    private static final String REST_EASY_PROVIDERS = "resteasy.providers";
 
-	public ServerStartup getServerStartup() {
-		return serverStartup;
-	}
+    public static ApplicationConfiguration create() {
+        return new ApplicationConfiguration();
+    }
 
-	public void setServerStartup(ServerStartup serverStartup) {
-		this.serverStartup = serverStartup;
-	}
+    /**
+     * Spring context configuration resource location
+     */
+    private String springConfigLocation;
+    /**
+     * Jetty server host.
+     */
+    private String host;
+    /**
+     * Jetty server port.
+     */
+    private String port;
+    /**
+     * Application context path.
+     */
+    private String contextPath;
+    /**
+     * Application context parameters.
+     */
+    private Map<String, String> contextParams;
+    /**
+     * Providers for restEasy.
+     */
+    private List<String> providers;
+    /**
+     * Servlet to be added to server.
+     */
+    private List<ServletConfiguration> servlets;
+    /**
+     * Filter to be added to server.
+     */
+    private List<FilterConfiguration> filters;
+    /**
+     * Listener to be added to server.
+     */
+    private List<EventListener> listeners;
+    /**
+     * Server config.
+     * <pre>
+     *     default server config : {@link JettyServerStartup}
+     * </pre>
+     */
+    private ServerStartup serverStartup;
+    /**
+     * Dispatcher disabled. default is false.
+     * <pre>
+     *     If true, there will be no dispatcher servlet added into servlet container.
+     *     Default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.dispacher.resteasy.RestEasyDispatcherInitialize}
+     * </pre>
+     */
+    private boolean dispatcherDisable = false;
+    /**
+     * Dispatcher servlet path.
+     * <pre>
+     *     default dispatcher path : "/*"
+     * </pre>
+     */
+    private String dispatcherPath = "/*";
+    /**
+     * Dispatcher config.
+     * <pre>
+     *     default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.dispacher.resteasy.RestEasyDispatcherInitialize}
+     * </pre>
+     */
+    private DispatcherInitialize dispatcherStartup;
 
-	public boolean isDispatcherDisable() {
-		return dispatcherDisable;
-	}
+    public ServerStartup getServerStartup() {
+        return serverStartup;
+    }
 
-	public void setDispatcherDisable(boolean dispatcherDisable) {
-		this.dispatcherDisable = dispatcherDisable;
-	}
+    public void setServerStartup(ServerStartup serverStartup) {
+        this.serverStartup = serverStartup;
+    }
 
-	public String getDispatcherPath() {
-		return dispatcherPath;
-	}
+    public ApplicationConfiguration serverStartup(ServerStartup serverStartup) {
+        this.serverStartup = serverStartup;
+        return this;
+    }
 
-	public void setDispatcherPath(String dispatcherPath) {
-		this.dispatcherPath = dispatcherPath;
-	}
+    public boolean isDispatcherDisable() {
+        return dispatcherDisable;
+    }
 
-	public DispatcherInitialize getDispatcherStartup() {
-		return dispatcherStartup;
-	}
+    public void setDispatcherDisable(boolean dispatcherDisable) {
+        this.dispatcherDisable = dispatcherDisable;
+    }
 
-	public void setDispatcherStartup(DispatcherInitialize dispatcherStartup) {
-		this.dispatcherStartup = dispatcherStartup;
-	}
+    public ApplicationConfiguration dispatcherDisable(boolean dispatcherDisable) {
+        this.dispatcherDisable = dispatcherDisable;
+        return this;
+    }
 
-	public String getSpringConfigLocation() {
-		return springConfigLocation;
-	}
+    public String getDispatcherPath() {
+        return dispatcherPath;
+    }
 
-	public void setSpringConfigLocation(String springConfigLocation) {
-		this.springConfigLocation = springConfigLocation;
-	}
+    public void setDispatcherPath(String dispatcherPath) {
+        this.dispatcherPath = dispatcherPath;
+    }
 
-	public String getHost() {
-		return host;
-	}
+    public ApplicationConfiguration dispatcherPath(String dispatcherPath) {
+        this.dispatcherPath = dispatcherPath;
+        return this;
+    }
 
-	public void setHost(String host) {
-		this.host = host;
-	}
+    public DispatcherInitialize getDispatcherStartup() {
+        return dispatcherStartup;
+    }
 
-	public String getPort() {
-		return port;
-	}
+    public void setDispatcherStartup(DispatcherInitialize dispatcherStartup) {
+        this.dispatcherStartup = dispatcherStartup;
+    }
 
-	public void setPort(String port) {
-		this.port = port;
-	}
+    public ApplicationConfiguration dispatcherStartup(DispatcherInitialize dispatcherStartup) {
+        this.dispatcherStartup = dispatcherStartup;
+        return this;
+    }
 
-	public String getContextPath() {
-		return contextPath;
-	}
+    public String getSpringConfigLocation() {
+        return springConfigLocation;
+    }
 
-	public void setContextPath(String contextPath) {
-		this.contextPath = contextPath;
-	}
+    public void setSpringConfigLocation(String springConfigLocation) {
+        this.springConfigLocation = springConfigLocation;
+    }
 
-	public Map<String, String> getContextParams() {
-		if (providers != null && !providers.isEmpty()) {
-			addContextParam(REST_EASY_PROVIDERS, StringUtils.combineWithSymbol(providers, ","));
-		}
-		return contextParams;
-	}
+    public ApplicationConfiguration springConfigLocation(String springConfigLocation) {
+        this.springConfigLocation = springConfigLocation;
+        return this;
+    }
 
-	public List<String> getProviders() {
-		return providers;
-	}
+    public String getHost() {
+        return host;
+    }
 
-	public List<ServletConfiguration> getServlets() {
-		return servlets;
-	}
+    public void setHost(String host) {
+        this.host = host;
+    }
 
-	public List<FilterConfiguration> getFilters() {
-		return filters;
-	}
+    public ApplicationConfiguration host(String host) {
+        this.host = host;
+        return this;
+    }
 
-	public List<EventListener> getListeners() {
-		return listeners;
-	}
+    public String getPort() {
+        return port;
+    }
 
-	public void addContextParam(String name, String value) {
-		if (this.contextParams == null) {
-			this.contextParams = new HashMap<>();
-		}
-		this.contextParams.put(name, value);
-	}
+    public void setPort(String port) {
+        this.port = port;
+    }
 
-	public void addProvider(String provider) {
-		if (provider == null || provider.isEmpty()) {
-			return;
-		}
-		if (this.providers == null) {
-			this.providers = new ArrayList<>();
-		}
-		this.providers.add(provider);
-	}
+    public ApplicationConfiguration port(String port) {
+        this.port = port;
+        return this;
+    }
 
-	public void addProvider(Class<?> provider) {
-		if (provider == null) {
-			return;
-		}
-		if (this.providers == null) {
-			this.providers = new ArrayList<>();
-		}
-		this.providers.add(provider.getName());
-	}
+    public String getContextPath() {
+        return contextPath;
+    }
 
-	public void addServlet(ServletConfiguration servlet) {
-		if (this.servlets == null) {
-			this.servlets = new ArrayList<>();
-		}
-		this.servlets.add(servlet);
-	}
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
 
-	public void addFilter(FilterConfiguration filter) {
-		if (this.filters == null) {
-			this.filters = new ArrayList<>();
-		}
-		this.filters.add(filter);
-	}
+    public ApplicationConfiguration contextPath(String contextPath) {
+        this.contextPath = contextPath;
+        return this;
+    }
 
-	public void addListener(EventListener listener) {
-		if (this.listeners == null) {
-			this.listeners = new ArrayList<>();
-		}
-		this.listeners.add(listener);
-	}
+    public Map<String, String> getContextParams() {
+        if (providers != null && !providers.isEmpty()) {
+            addContextParam(REST_EASY_PROVIDERS, StringUtils.combineWithSymbol(providers, ","));
+        }
+        return contextParams;
+    }
 
-	public void setListeners(ListenerConfiguration listenerConfiguration) {
-		if (listenerConfiguration == null) {
-			return;
-		}
-		this.listeners = listenerConfiguration.getListeners();
-	}
+    public List<String> getProviders() {
+        return providers;
+    }
 
-	public void setListeners(List<EventListener> listeners) {
-		this.listeners = listeners;
-	}
+    public List<ServletConfiguration> getServlets() {
+        return servlets;
+    }
 
-	@Override
-	public String toString() {
-		return "ApplicationConfiguration{" +
-				"serverStartup=" + serverStartup +
-				", dispatcherDisable=" + dispatcherDisable +
-				", dispatcherPath='" + dispatcherPath + '\'' +
-				", dispatcherStartup=" + dispatcherStartup +
-				", springConfigLocation='" + springConfigLocation + '\'' +
-				", host='" + host + '\'' +
-				", port='" + port + '\'' +
-				", contextPath='" + contextPath + '\'' +
-				", contextParams=" + contextParams +
-				", providers=" + providers +
-				", servlets=" + servlets +
-				", filters=" + filters +
-				", listeners=" + listeners +
-				'}';
-	}
+    public List<FilterConfiguration> getFilters() {
+        return filters;
+    }
+
+    public List<EventListener> getListeners() {
+        return listeners;
+    }
+
+    public void addContextParam(String name, String value) {
+        if (this.contextParams == null) {
+            this.contextParams = new HashMap<>();
+        }
+        this.contextParams.put(name, value);
+    }
+
+    public ApplicationConfiguration contextParam(String name, String value) {
+        if (this.contextParams == null) {
+            this.contextParams = new HashMap<>();
+        }
+        this.contextParams.put(name, value);
+        return this;
+    }
+
+    public void addProvider(String provider) {
+        if (provider == null || provider.isEmpty()) {
+            return;
+        }
+        if (this.providers == null) {
+            this.providers = new ArrayList<>();
+        }
+        this.providers.add(provider);
+    }
+
+    public ApplicationConfiguration provider(String provider) {
+        if (provider == null || provider.isEmpty()) {
+            return this;
+        }
+        if (this.providers == null) {
+            this.providers = new ArrayList<>();
+        }
+        this.providers.add(provider);
+        return this;
+    }
+
+    public void addProvider(Class<?> provider) {
+        if (provider == null) {
+            return;
+        }
+        if (this.providers == null) {
+            this.providers = new ArrayList<>();
+        }
+        this.providers.add(provider.getName());
+    }
+
+    public ApplicationConfiguration provider(Class<?> provider) {
+        if (provider == null) {
+            return this;
+        }
+        if (this.providers == null) {
+            this.providers = new ArrayList<>();
+        }
+        this.providers.add(provider.getName());
+        return this;
+    }
+
+    public void addServlet(ServletConfiguration servlet) {
+        if (this.servlets == null) {
+            this.servlets = new ArrayList<>();
+        }
+        this.servlets.add(servlet);
+    }
+
+    public ApplicationConfiguration servlet(ServletConfiguration servlet) {
+        if (this.servlets == null) {
+            this.servlets = new ArrayList<>();
+        }
+        this.servlets.add(servlet);
+        return this;
+    }
+
+    public void addFilter(FilterConfiguration filter) {
+        if (this.filters == null) {
+            this.filters = new ArrayList<>();
+        }
+        this.filters.add(filter);
+    }
+
+    public ApplicationConfiguration filter(FilterConfiguration filter) {
+        if (this.filters == null) {
+            this.filters = new ArrayList<>();
+        }
+        this.filters.add(filter);
+        return this;
+    }
+
+    public void addListener(EventListener listener) {
+        if (this.listeners == null) {
+            this.listeners = new ArrayList<>();
+        }
+        this.listeners.add(listener);
+    }
+
+    public ApplicationConfiguration listener(EventListener listener) {
+        if (this.listeners == null) {
+            this.listeners = new ArrayList<>();
+        }
+        this.listeners.add(listener);
+        return this;
+    }
+
+    public void setListeners(ListenerConfiguration listenerConfiguration) {
+        if (listenerConfiguration == null) {
+            return;
+        }
+        this.listeners = listenerConfiguration.getListeners();
+    }
+
+    public ApplicationConfiguration listeners(ListenerConfiguration listenerConfiguration) {
+        if (listenerConfiguration == null) {
+            return this;
+        }
+        this.listeners = listenerConfiguration.getListeners();
+        return this;
+    }
+
+    public void setListeners(List<EventListener> listeners) {
+        this.listeners = listeners;
+    }
+
+    @Override
+    public String toString() {
+        return "ApplicationConfiguration{" +
+                "springConfigLocation='" + springConfigLocation + '\'' +
+                ", host='" + host + '\'' +
+                ", port='" + port + '\'' +
+                ", contextPath='" + contextPath + '\'' +
+                ", contextParams=" + contextParams +
+                ", providers=" + providers +
+                ", servlets=" + servlets +
+                ", filters=" + filters +
+                ", listeners=" + listeners +
+                ", serverStartup=" + serverStartup +
+                ", dispatcherDisable=" + dispatcherDisable +
+                ", dispatcherPath='" + dispatcherPath + '\'' +
+                ", dispatcherStartup=" + dispatcherStartup +
+                '}';
+    }
 }
