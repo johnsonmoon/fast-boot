@@ -1,7 +1,6 @@
 package com.github.johnsonmoon.fastboot.core;
 
-import com.github.johnsonmoon.fastboot.core.common.ApplicationBootstrap;
-import com.github.johnsonmoon.fastboot.core.common.ServerStartup;
+import com.github.johnsonmoon.fastboot.core.server.ServerStartup;
 import com.github.johnsonmoon.fastboot.core.entity.ApplicationConfiguration;
 import com.github.johnsonmoon.fastboot.core.util.ApplicationConfigurationUtils;
 import org.slf4j.Logger;
@@ -107,7 +106,7 @@ public class ApplicationStartup {
      * Block the main thread.
      */
     public static void await() {
-        if (!shutdown.get()) {
+        while (!shutdown.get()) {
             try {
                 TimeUnit.MILLISECONDS.sleep(10_000);
             } catch (Exception e) {

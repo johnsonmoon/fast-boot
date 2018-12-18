@@ -1,7 +1,8 @@
 package com.github.johnsonmoon.fastboot.core.entity;
 
-import com.github.johnsonmoon.fastboot.core.common.DispatcherStartup;
-import com.github.johnsonmoon.fastboot.core.common.ServerStartup;
+import com.github.johnsonmoon.fastboot.core.dispacher.DispatcherInitialize;
+import com.github.johnsonmoon.fastboot.core.server.ServerStartup;
+import com.github.johnsonmoon.fastboot.core.server.impl.JettyServerStartup;
 import com.github.johnsonmoon.fastboot.core.util.StringUtils;
 
 import java.util.*;
@@ -50,7 +51,7 @@ public class ApplicationConfiguration {
 	/**
 	 * Server config.
 	 * <pre>
-	 *     default server config : {@link com.github.johnsonmoon.fastboot.core.common.impl.JettyServerStartup}
+	 *     default server config : {@link JettyServerStartup}
 	 * </pre>
 	 */
 	private ServerStartup serverStartup;
@@ -58,7 +59,7 @@ public class ApplicationConfiguration {
 	 * Dispatcher disabled. default is false.
 	 * <pre>
 	 *     If true, there will be no dispatcher servlet added into servlet container.
-	 *     Default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.common.impl.RestEasyDispatcherStartup}
+	 *     Default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.dispacher.resteasy.RestEasyDispatcherInitialize}
 	 * </pre>
 	 */
 	private boolean dispatcherDisable = false;
@@ -72,10 +73,10 @@ public class ApplicationConfiguration {
 	/**
 	 * Dispatcher config.
 	 * <pre>
-	 *     default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.common.impl.RestEasyDispatcherStartup}
+	 *     default dispatcher config : {@link com.github.johnsonmoon.fastboot.core.dispacher.resteasy.RestEasyDispatcherInitialize}
 	 * </pre>
 	 */
-	private DispatcherStartup dispatcherStartup;
+	private DispatcherInitialize dispatcherStartup;
 
 	public ServerStartup getServerStartup() {
 		return serverStartup;
@@ -101,11 +102,11 @@ public class ApplicationConfiguration {
 		this.dispatcherPath = dispatcherPath;
 	}
 
-	public DispatcherStartup getDispatcherStartup() {
+	public DispatcherInitialize getDispatcherStartup() {
 		return dispatcherStartup;
 	}
 
-	public void setDispatcherStartup(DispatcherStartup dispatcherStartup) {
+	public void setDispatcherStartup(DispatcherInitialize dispatcherStartup) {
 		this.dispatcherStartup = dispatcherStartup;
 	}
 

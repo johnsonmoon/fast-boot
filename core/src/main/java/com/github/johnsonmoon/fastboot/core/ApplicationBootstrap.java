@@ -1,9 +1,11 @@
-package com.github.johnsonmoon.fastboot.core.common;
+package com.github.johnsonmoon.fastboot.core;
 
-import com.github.johnsonmoon.fastboot.core.common.impl.JettyServerStartup;
-import com.github.johnsonmoon.fastboot.core.common.impl.RestEasyDispatcherStartup;
+import com.github.johnsonmoon.fastboot.core.dispacher.DispatcherInitialize;
+import com.github.johnsonmoon.fastboot.core.server.impl.JettyServerStartup;
+import com.github.johnsonmoon.fastboot.core.dispacher.resteasy.RestEasyDispatcherInitialize;
 import com.github.johnsonmoon.fastboot.core.entity.ApplicationConfiguration;
 
+import com.github.johnsonmoon.fastboot.core.server.ServerStartup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -12,10 +14,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * Created by johnsonmoon at 2018/5/15 17:47.
  */
-public class ApplicationBootstrap {
+class ApplicationBootstrap {
 	private static Logger logger = LoggerFactory.getLogger(ApplicationBootstrap.class);
 
-	public static ApplicationContext springStartup(ApplicationConfiguration configuration) {
+	static ApplicationContext springStartup(ApplicationConfiguration configuration) {
 		logger.debug("Spring context initializing...");
 		ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext(
 				configuration.getSpringConfigLocation());
@@ -23,19 +25,19 @@ public class ApplicationBootstrap {
 		return classPathXmlApplicationContext;
 	}
 
-	public static void dispatcherStartup(ApplicationConfiguration configuration, ApplicationContext applicationContext) {
+	static void dispatcherStartup(ApplicationConfiguration configuration, ApplicationContext applicationContext) {
 		if (configuration.isDispatcherDisable()) {//Disable dispatcher servlet addition.
 			return;
 		}
 		logger.debug("Dispatcher servlet initializing...");
-		DispatcherStartup dispatcherStartup = configuration.getDispatcherStartup();
+		DispatcherInitialize dispatcherStartup = configuration.getDispatcherStartup();
 		if (dispatcherStartup == null) {
-			dispatcherStartup = new RestEasyDispatcherStartup();//default: restEasy
+			dispatcherStartup = new RestEasyDispatcherInitialize();//default: restEasy
 		}
 		dispatcherStartup.dispatcherInit(configuration, applicationContext);
 	}
 
-	public static ServerStartup serverStartup(ApplicationConfiguration configuration) {
+	static ServerStartup serverStartup(ApplicationConfiguration configuration) {
 		ServerStartup serverStartup = configuration.getServerStartup();
 		if (serverStartup == null) {
 			serverStartup = new JettyServerStartup();//default: jetty

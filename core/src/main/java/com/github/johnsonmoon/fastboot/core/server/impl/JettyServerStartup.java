@@ -1,6 +1,6 @@
-package com.github.johnsonmoon.fastboot.core.common.impl;
+package com.github.johnsonmoon.fastboot.core.server.impl;
 
-import com.github.johnsonmoon.fastboot.core.common.ServerStartup;
+import com.github.johnsonmoon.fastboot.core.server.ServerStartup;
 import com.github.johnsonmoon.fastboot.core.entity.FilterConfiguration;
 import com.github.johnsonmoon.fastboot.core.entity.ServletConfiguration;
 import com.github.johnsonmoon.fastboot.core.util.CollectionUtils;
